@@ -13,7 +13,7 @@ import {
   hotelsRouter,
   bookingRouter,
 } from '@/routers';
-import { loadEnv, connectDb, disconnectDB } from '@/config';
+import { loadEnv, connectDb, disconnectDB, redisConnection } from '@/config';
 
 loadEnv();
 
@@ -34,6 +34,7 @@ app
 
 export function init(): Promise<Express> {
   connectDb();
+  redisConnection();
   return Promise.resolve(app);
 }
 
