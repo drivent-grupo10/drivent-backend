@@ -7,9 +7,13 @@ import { userRepository } from '@/repositories';
 export async function createUser({ email, password }: CreateUserParams): Promise<User> {
   await canEnrollOrFail();
 
-  await validateUniqueEmailOrFail(email);
+  const emailDuplicated = await validateUniqueEmailOrFail(email);
+  if(emailDuplicated){
+    throw duplicatedEmailError();
+  }
+  const passwordText: string = password.toString() as string;
 
-  const hashedPassword = await bcrypt.hash(password, 12);
+  const hashedPassword = await bcrypt.hash(passwordText, 12);
   return userRepository.create({
     email,
     password: hashedPassword,
@@ -19,8 +23,9 @@ export async function createUser({ email, password }: CreateUserParams): Promise
 async function validateUniqueEmailOrFail(email: string) {
   const userWithSameEmail = await userRepository.findByEmail(email);
   if (userWithSameEmail) {
-    throw duplicatedEmailError();
+    return userWithSameEmail;
   }
+  return false;
 }
 
 async function canEnrollOrFail() {
@@ -34,4 +39,5 @@ export type CreateUserParams = Pick<User, 'email' | 'password'>;
 
 export const userService = {
   createUser,
+  validateUniqueEmailOrFail
 };
