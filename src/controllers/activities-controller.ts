@@ -32,3 +32,14 @@ export async function getActivitiesByDate(req: AuthenticatedRequest, res: Respon
     next(error);
   }
 } */
+
+export async function bookActivitie(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const { actId } = req.params;
+  const { userId } = req;
+  try {
+    await activitiesService.bookActivitie(userId, Number(actId));
+    return res.sendStatus(httpStatus.CREATED);
+  } catch (error) {
+    next(error);
+  }
+}
