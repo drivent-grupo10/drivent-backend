@@ -20,11 +20,58 @@ async function getActivitiesByDate(date: string) {
           }
         }
       }
-    }
+    },
   });
 }
 
+async function getActivitiesById(id: number) {
+  return prisma.activities.findFirst({
+    where: {
+      id
+    },
+    include: {
+      ActivitiesBook: true
+    }
+  });
+};
+
+async function getActivitiesByDateAndUser(start: Date, end: Date, userId: number) {
+  const activity = await prisma.activitiesBook.findFirst({
+    where: {
+      userId,
+      Activities: {
+        startAt: {
+          lte: end,
+        },
+        endAt: {
+          gte: start,
+        }
+      },
+    },
+  });
+
+  if (activity) {
+    return activity;
+  } else {
+    return null;
+  }
+}
+
+
+async function bookActivitie(userId: number, actId: number) {
+    await prisma.activitiesBook.create({
+      data:{
+        userId,
+        activitieId: actId
+      }
+    })
+}
+
+
 export const activitiesRepository = {
   getAllActivities,
-  getActivitiesByDate
+  getActivitiesByDate,
+  getActivitiesById,
+  getActivitiesByDateAndUser,
+  bookActivitie
 };
