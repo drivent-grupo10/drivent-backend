@@ -11,6 +11,7 @@ async function findRoomsByHotelId(hotelId: number) {
     },
     select: {
       id: true,
+      name: true,
       image: true,
       createdAt: true,
       updatedAt: true,
