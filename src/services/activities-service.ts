@@ -50,6 +50,7 @@ async function bookActivitie(userId: number, id: number) {
   }
 
   await activitiesRepository.bookActivitie(userId, activitie.id);
+  await activitiesRepository.bookCapacity(activitie.id);
 
   return;
 }
