@@ -18,6 +18,9 @@ async function getActivitiesByDate(date: string) {
             gte: new Date(date),
             lt: new Date(new Date(date).getTime() + 86400000)
           }
+        },
+        orderBy: {
+          name: 'asc'
         }
       }
     },
@@ -67,11 +70,25 @@ async function bookActivitie(userId: number, actId: number) {
     })
 }
 
+async function bookCapacity(activitieId: number) {
+  await prisma.activities.update({
+    where: {
+      id: activitieId
+    },
+    data: {
+      capacity: {
+        decrement: 1 
+      }
+    }
+  })
+}
+
 
 export const activitiesRepository = {
   getAllActivities,
   getActivitiesByDate,
   getActivitiesById,
   getActivitiesByDateAndUser,
-  bookActivitie
+  bookActivitie,
+  bookCapacity
 };
